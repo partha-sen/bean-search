@@ -32,8 +32,18 @@ public class ProductService {
         System.out.println(productDto);
         Product e = productMapper.toEntity(productDto);
         System.out.println(e);
-        ///e.setVersion(e.getVersion()+1);
-        productRepository.save(e);
+        long highestVersion = productRepository.getMaxVersion(productDto.id());
+        System.out.println("highestVersion "+highestVersion);
+        try {
+            Thread.sleep(productDto.delay()*1000);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+        if(e.getVersion() == highestVersion){
+            e.setVersion(productDto.version()+1);
+            productRepository.save(e);
+        }
+
     }
 
 }

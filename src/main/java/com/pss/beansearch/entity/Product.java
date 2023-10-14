@@ -1,20 +1,22 @@
 package com.pss.beansearch.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.io.Serializable;
 
 @Entity
 @Data
 @NoArgsConstructor
 @ToString
 @IdClass(ProductId.class)
-public class Product {
+public class Product implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_generator")
-    @SequenceGenerator(name = "product_id_generator", sequenceName = "product_sequenceid_generator", allocationSize = 1)
     long id;
     @Id
     long version;
