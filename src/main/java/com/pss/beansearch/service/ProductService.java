@@ -21,28 +21,25 @@ public class ProductService {
     public void insertProduct(ProductDto productDto){
         System.out.println(productDto);
         Product e = productMapper.toEntity(productDto);
-        e.setVersion(1);
+        e.setVersion(1l);
         System.out.println(e);
         productRepository.save(e);
     }
 
-    @Transactional
+
     public void updateProduct(ProductDto productDto){
 
         System.out.println(productDto);
         Product e = productMapper.toEntity(productDto);
         System.out.println(e);
-        long highestVersion = productRepository.getMaxVersion(productDto.id());
-        System.out.println("highestVersion "+highestVersion);
         try {
             Thread.sleep(productDto.delay()*1000);
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
-        if(e.getVersion() == highestVersion){
             e.setVersion(productDto.version()+1);
+            e.setInsert(true);
             productRepository.save(e);
-        }
 
     }
 
