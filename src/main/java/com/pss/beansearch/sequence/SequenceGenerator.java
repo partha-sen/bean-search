@@ -12,24 +12,31 @@ public abstract class SequenceGenerator {
     private final EntityManager entityManager;
     private final String SEQUENCE_NAME;
     private final Long INCREMENT_BY;
-    private Long LAST_VALUE;
+    private Long lastValue;
     private Long currentValue;
+
+    private Long retrieveValue(String sqlQuery){
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        List<Long> resultList = query.getResultList();
+        return resultList.get(0);
+    }
 
     public SequenceGenerator(EntityManager entityManager, String sequenceName) {
         this.SEQUENCE_NAME = sequenceName;
         this.entityManager = entityManager;
-        Query query = entityManager.createNativeQuery("select increment_by " +
-                "from pg_sequences where sequencename = '" + SEQUENCE_NAME + "'");
-        List<Long> resultList = query.getResultList();
-        this.INCREMENT_BY = resultList.get(0);
+        String sqlQuery = "select increment_by " +
+                "from pg_sequences where sequencename = '" +
+                SEQUENCE_NAME + "'";
+        this.INCREMENT_BY = retrieveValue(sqlQuery);
     }
 
     public synchronized Long getValue(){
-      if(Objects.isNull(LAST_VALUE) || (currentValue-LAST_VALUE>INCREMENT_BY)){
-          Query query = entityManager.createNativeQuery("select nextval('"+ SEQUENCE_NAME + "')");
-          List<Long> resultList = query.getResultList();
-          LAST_VALUE = resultList.get(0);
-          currentValue = resultList.get(0);
+      if(Objects.isNull(lastValue) || (currentValue- lastValue >=INCREMENT_BY)){
+          String sqlQuery = "select nextval('" +
+                  SEQUENCE_NAME + "')";
+          Long dbValue = retrieveValue(sqlQuery);
+          lastValue = dbValue;
+          currentValue = dbValue;
       }
       return currentValue++;
     }

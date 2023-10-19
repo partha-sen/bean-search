@@ -16,8 +16,11 @@ public class DropdownService {
 
     private Set<String> allBeanNamesTypeDropdownService;
     public DropdownService(ApplicationContext springContext) {
+        Long start = System.currentTimeMillis();
         this.beanNameAndInstanceMap = springContext.getBeansOfType(UxDropdownPopular.class);
         this.allBeanNamesTypeDropdownService = beanNameAndInstanceMap.keySet();
+        Long end = System.currentTimeMillis();
+        System.out.println("Lookup time: " + (end-start));
     }
 
     public Set<String> getAllBeanName(){
