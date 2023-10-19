@@ -1,10 +1,7 @@
 package com.pss.beansearch.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,12 +13,9 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @ToString
-@IdClass(ProductId.class)
-public class Product implements Serializable, Persistable<Long> {
-    @Id
-    Long id;
-    @Id
-    Long version;
+public class Product implements Serializable, Persistable<ProductId> {
+    @EmbeddedId
+    ProductId productId;
 	String name;
     Double price;
 
@@ -31,5 +25,9 @@ public class Product implements Serializable, Persistable<Long> {
     //@Override
     public boolean isNew() {
         return isInsert;
+    }
+
+    public ProductId getId(){
+      return productId;
     }
 }
