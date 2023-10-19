@@ -1,26 +1,52 @@
 package com.pss.beansearch.entity;
 
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;
 
 @Entity
-@Data
-@NoArgsConstructor
-@ToString
 public class Product implements Serializable, Persistable<ProductId> {
     @EmbeddedId
     ProductId productId;
 	String name;
     Double price;
 
+    public ProductId getProductId() {
+        return productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+
+    public void setProductId(ProductId productId) {
+        this.productId = productId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     @Transient
-    boolean isInsert;
+    private boolean isInsert;
+
+
+    public void forceInsert(boolean flag) {
+        this.isInsert = flag;
+    }
 
     //@Override
     public boolean isNew() {

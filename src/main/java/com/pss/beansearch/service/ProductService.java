@@ -40,7 +40,7 @@ public class ProductService {
         }
         long version = e.getProductId().getVersion();
         e.getProductId().setVersion(version+1);
-            e.setInsert(true);
+            e.forceInsert(true);
             productRepository.save(e);
 
     }
