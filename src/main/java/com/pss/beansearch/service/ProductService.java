@@ -21,12 +21,13 @@ public class ProductService {
     public void insertProduct(ProductDto productDto){
         System.out.println(productDto);
         Product e = productMapper.toEntity(productDto);
-        e.setVersion(1l);
+        e.getProductId().setVersion(1L);
         System.out.println(e);
         productRepository.save(e);
     }
 
 
+    @Transactional
     public void updateProduct(ProductDto productDto){
 
         System.out.println(productDto);
@@ -37,7 +38,8 @@ public class ProductService {
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
-            e.setVersion(productDto.version()+1);
+        long version = e.getProductId().getVersion();
+        e.getProductId().setVersion(version+1);
             e.setInsert(true);
             productRepository.save(e);
 
