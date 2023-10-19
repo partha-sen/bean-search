@@ -12,6 +12,7 @@ public abstract class SequenceGenerator {
     private final EntityManager entityManager;
     private final String SEQUENCE_NAME;
     private final Long INCREMENT_BY;
+
     private Long lastValue;
     private Long currentValue;
 
@@ -24,16 +25,15 @@ public abstract class SequenceGenerator {
     public SequenceGenerator(EntityManager entityManager, String sequenceName) {
         this.SEQUENCE_NAME = sequenceName;
         this.entityManager = entityManager;
-        String sqlQuery = "select increment_by " +
-                "from pg_sequences where sequencename = '" +
-                SEQUENCE_NAME + "'";
+        String incrementBySql = "select increment_by from pg_sequences where sequencename = '%s'";
+        String sqlQuery = incrementBySql.formatted(SEQUENCE_NAME);
         this.INCREMENT_BY = retrieveValue(sqlQuery);
     }
 
     public synchronized Long getValue(){
       if(Objects.isNull(lastValue) || (currentValue- lastValue >=INCREMENT_BY)){
-          String sqlQuery = "select nextval('" +
-                  SEQUENCE_NAME + "')";
+          String nextValSql = "select nextval('%s')";
+          String sqlQuery = nextValSql.formatted(SEQUENCE_NAME);
           Long dbValue = retrieveValue(sqlQuery);
           lastValue = dbValue;
           currentValue = dbValue;
