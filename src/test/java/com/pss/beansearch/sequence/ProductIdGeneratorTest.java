@@ -16,46 +16,46 @@ public class ProductIdGeneratorTest {
     private final EntityManager entityManager = mock(EntityManager.class);
     private final Query query = mock(Query.class);
 
-    ProductIdGenerator productIdGenerator = getProductIdGeneratorIncrementBy3();
-    FakeIdGenerator fakeIdGenerator = getFakeIdGeneratorIncrementBy4();
+    ProductIdGenerator productIdGenerator3 = getProductIdGeneratorIncrementBy3();
+    ProductIdGenerator productIdGenerator4 = getProductIdGeneratorIncrementBy4();
 
 
 
     @Test
     public void testCallingDbSequenceWhenLastValueIsNull(){
         clearInvocations(entityManager);
-        productIdGenerator.getValue();
+        productIdGenerator3.getValue();
         verify(entityManager, Mockito.times(1)).createNativeQuery(any());
     }
 
     @Test
     public void testLocalIncrement(){
         when(query.getResultList()).thenReturn(List.of(1L));
-        assertEquals(1, productIdGenerator.getValue());
+        assertEquals(1, productIdGenerator3.getValue());
         clearInvocations(entityManager);
-        assertEquals(2, productIdGenerator.getValue());
-        assertEquals(3, productIdGenerator.getValue());
+        assertEquals(2, productIdGenerator3.getValue());
+        assertEquals(3, productIdGenerator3.getValue());
         verify(entityManager, Mockito.times(0)).createNativeQuery(any());
     }
 
     @Test
     public void testCallingDbSequenceWhenExceedLocalLimit(){
         when(query.getResultList()).thenReturn(List.of(4L));
-        assertEquals(4, productIdGenerator.getValue());
+        assertEquals(4, productIdGenerator3.getValue());
         clearInvocations(entityManager);
-        assertEquals(5, productIdGenerator.getValue());
-        assertEquals(6, productIdGenerator.getValue());
-        productIdGenerator.getValue();
+        assertEquals(5, productIdGenerator3.getValue());
+        assertEquals(6, productIdGenerator3.getValue());
+        productIdGenerator3.getValue();
         verify(entityManager, Mockito.times(1)).createNativeQuery(any());
     }
 
     @Test
     public void testSequenceGeneratorConsistency(){
         when(query.getResultList()).thenReturn(List.of(1L));
-        assertEquals(1, productIdGenerator.getValue());
+        assertEquals(1, productIdGenerator3.getValue());
 
         when(query.getResultList()).thenReturn(List.of(5L));
-        assertEquals(5, fakeIdGenerator.getValue());
+        assertEquals(5, productIdGenerator4.getValue());
 
     }
 
@@ -67,10 +67,10 @@ public class ProductIdGeneratorTest {
         return new ProductIdGenerator(entityManager);
     }
 
-    private FakeIdGenerator getFakeIdGeneratorIncrementBy4() {
+    private ProductIdGenerator getProductIdGeneratorIncrementBy4() {
         when(entityManager.createNativeQuery(any())).thenReturn(query);
         when(query.getResultList()).thenReturn(List.of(4L));
-        return new FakeIdGenerator(entityManager);
+        return new ProductIdGenerator(entityManager);
     }
 
 }
