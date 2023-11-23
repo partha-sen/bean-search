@@ -1,7 +1,6 @@
 package com.pss.beansearch.service;
 
 import com.pss.beansearch.dto.Dropdown;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -12,11 +11,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class DropdownService {
-    private Map<String, UxDropdownPopular> beanNameAndInstanceMap;
+    private final Map<String, UxDropdownPopular> beanNameAndInstanceMap;
+    private final Set<String> allBeanNamesTypeDropdownService;
 
-    private Set<String> allBeanNamesTypeDropdownService;
-    public DropdownService(ApplicationContext springContext) {
-        this.beanNameAndInstanceMap = springContext.getBeansOfType(UxDropdownPopular.class);
+    public DropdownService(Map<String, UxDropdownPopular> beanNameAndInstanceMap) {
+        this.beanNameAndInstanceMap = beanNameAndInstanceMap;
         this.allBeanNamesTypeDropdownService = beanNameAndInstanceMap.keySet();
     }
 
